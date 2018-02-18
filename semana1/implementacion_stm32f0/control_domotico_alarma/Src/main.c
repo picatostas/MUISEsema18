@@ -41,16 +41,33 @@
 #include "stm32f0xx_hal.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "fsm.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim6;
 TIM_HandleTypeDef htim14;
+TIM_HandleTypeDef htim16;
+TIM_HandleTypeDef htim17;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
+int light_flag = 0, timer_flag = 0, code_flag = 0,buzz_flag = 0,
+		bt_flag = 0, alarm_flag = 0,pir_flag = 0, armed_flag = 0;
+enum alarm_state{
+  ALM_ARMED,
+  ALM_DISARMED,
+  ALM_INTRUSION
+};
+
+
+enum light_state{
+  LIGHT_ON,
+  LIGHT_OFF
+};
+
+
 
 /* USER CODE END PV */
 
@@ -59,7 +76,9 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM6_Init(void);
-static void MX_TIM14_Init(void);                                    
+static void MX_TIM14_Init(void);
+static void MX_TIM16_Init(void);
+static void MX_TIM17_Init(void);                                    
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
                                 
 
@@ -100,15 +119,65 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM6_Init();
   MX_TIM14_Init();
+  MX_TIM16_Init();
+  MX_TIM17_Init();
 
   /* USER CODE BEGIN 2 */
+
+
+  // FSM OUT FUNCS PROTO
+  void turn_on(fsm_t* this);
+  void turn_off(fsm_t* this);
+  void arm(fsm_t* this);
+  void disarm(fsm_t* this);
+  void intrusion(fsm_t* this);
+  // GUARD ACTIONS PROTO
+  int button_pressed(fsm_t* this);
+  int timer_finished(fsm_t* this);
+  int check_BT(fsm_t* this);
+  int sensor_detection(fsm_t* this);
+
+  // TRANSITION TABLES
+  static fsm_trans_t alarm_tt[] = {
+
+    { ALM_DISARMED,           check_BT,      ALM_ARMED,          arm},
+    {    ALM_ARMED, 	      check_BT,   ALM_DISARMED,       disarm},
+    {    ALM_ARMED,   sensor_detection,  ALM_INTRUSION,    intrusion},
+    {ALM_INTRUSION,           check_BT,   ALM_DISARMED,       disarm},
+    {-1, NULL, -1, NULL }
+
+  };
+
+  static fsm_trans_t light_tt[] = {
+
+    { LIGHT_OFF, button_pressed,   LIGHT_ON,    turn_on },
+    {  LIGHT_ON, button_pressed,  LIGHT_OFF,   turn_off },
+    {  LIGHT_ON, timer_finished,  LIGHT_OFF,   turn_off },
+    {-1, NULL, -1, NULL }
+
+  };
+
+ fsm_t* alarm_fsm = fsm_new(alarm_tt);
+ fsm_t* light_fsm =  fsm_new(light_tt);
+
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+  while (1){
+	  fsm_fire(alarm_fsm);
+	  if (alarm_fsm->current_state == ALM_DISARMED) {
+		  fsm_fire(light_fsm);
+	  }
+	  /*
+	  if (alarm_fsm->current_state == ALM_ARMED){
+	  	  alarm_flag = 1;
+	  }
+	  else
+		  alarm_flag = 0;
+
+	  */
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
@@ -227,7 +296,7 @@ static void MX_TIM6_Init(void)
   htim6.Instance = TIM6;
   htim6.Init.Prescaler = 47999;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 9;
+  htim6.Init.Period = 49;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {
@@ -245,8 +314,44 @@ static void MX_TIM14_Init(void)
   htim14.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim14.Init.Period = 200;
   htim14.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim14.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  htim14.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim14) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+}
+
+/* TIM16 init function */
+static void MX_TIM16_Init(void)
+{
+
+  htim16.Instance = TIM16;
+  htim16.Init.Prescaler = 47999;
+  htim16.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim16.Init.Period = 2999;
+  htim16.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim16.Init.RepetitionCounter = 0;
+  htim16.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim16) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+}
+
+/* TIM17 init function */
+static void MX_TIM17_Init(void)
+{
+
+  htim17.Instance = TIM17;
+  htim17.Init.Prescaler = 47999;
+  htim17.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim17.Init.Period = 9;
+  htim17.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim17.Init.RepetitionCounter = 49;
+  htim17.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim17) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -271,7 +376,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, LIGHT_Pin|ALARM_LED_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, LIGHT_LED_Pin|ALARM_LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : CODE_BT_Pin */
   GPIO_InitStruct.Pin = CODE_BT_Pin;
@@ -287,12 +392,12 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : LIGHT_BT_2_Pin */
   GPIO_InitStruct.Pin = LIGHT_BT_2_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(LIGHT_BT_2_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LIGHT_Pin ALARM_LED_Pin */
-  GPIO_InitStruct.Pin = LIGHT_Pin|ALARM_LED_Pin;
+  /*Configure GPIO pins : LIGHT_LED_Pin ALARM_LED_Pin */
+  GPIO_InitStruct.Pin = LIGHT_LED_Pin|ALARM_LED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -317,6 +422,107 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+/// IT CALLBACKS
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+
+	if(htim->Instance == TIM16){
+		timer_flag = 1;
+	}
+	if (htim->Instance == TIM6){ // debounce control luz
+
+		light_flag = 1;
+		HAL_TIM_Base_Stop_IT(&htim6);
+	}
+	if (htim->Instance == TIM17){ // debounce pulsador armado
+		bt_flag = 1;
+		HAL_TIM_Base_Stop_IT(&htim17);
+	}
+	if (htim->Instance == TIM14){
+		buzz_flag = !buzz_flag;
+		HAL_GPIO_TogglePin(ALARM_LED_GPIO_Port,ALARM_LED_Pin);
+		if (buzz_flag) {
+			HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_2);
+		}
+		else
+			HAL_TIM_PWM_Stop(&htim1,TIM_CHANNEL_2);
+	}
+}
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+
+	if (GPIO_Pin == LIGHT_BT_1_Pin || GPIO_Pin == LIGHT_BT_2_Pin) {
+		HAL_TIM_Base_Start_IT(&htim6);
+	}
+	if (GPIO_Pin == CODE_BT_Pin) {
+		HAL_TIM_Base_Start_IT(&htim17);
+	}
+	if (GPIO_Pin == PIR_SENSOR_Pin){
+		if (alarm_flag) {
+			pir_flag = 1;
+		}
+
+	}
+}
+
+void turn_on(fsm_t* this){
+
+	HAL_GPIO_WritePin(LIGHT_LED_GPIO_Port,LIGHT_LED_Pin,GPIO_PIN_SET);
+	HAL_TIM_Base_Start_IT(&htim16);
+}
+void turn_off(fsm_t* this){
+	timer_flag = 0;
+	HAL_GPIO_WritePin(LIGHT_LED_GPIO_Port,LIGHT_LED_Pin,GPIO_PIN_RESET);
+	HAL_TIM_Base_Stop_IT(&htim16);
+}
+void arm(fsm_t* this){
+	alarm_flag = 1;
+	HAL_GPIO_WritePin(ALARM_LED_GPIO_Port,ALARM_LED_Pin,GPIO_PIN_SET);
+	HAL_TIM_Base_Stop_IT(&htim14);
+	HAL_GPIO_WritePin(LIGHT_LED_GPIO_Port,LIGHT_LED_Pin,GPIO_PIN_RESET);
+	buzz_flag = 0;
+}
+void disarm(fsm_t* this){
+	alarm_flag = 0;
+	HAL_TIM_Base_Stop_IT(&htim14);
+	HAL_GPIO_WritePin(ALARM_LED_GPIO_Port,ALARM_LED_Pin,GPIO_PIN_RESET);
+	buzz_flag = 0;
+	HAL_TIM_PWM_Stop(&htim1,TIM_CHANNEL_2);
+
+}
+void intrusion(fsm_t* this){
+	pir_flag = 0;
+	HAL_TIM_Base_Start_IT(&htim14);
+}
+// GUARD ACTIONS
+int button_pressed(fsm_t* this){
+	if (light_flag){
+		light_flag = 0;
+		return 1;
+	}
+	else
+		return 0;
+}
+int timer_finished(fsm_t* this){
+	if (timer_flag) {
+		return 1;
+	}
+	else
+		return 0;
+}
+int check_BT(fsm_t* this){
+	if (bt_flag){
+		bt_flag = 0;
+		return 1;
+	}
+	else
+		return 0;
+}
+int sensor_detection(fsm_t* this){
+	if (alarm_flag && pir_flag) {
+		return 1;
+	}
+	else
+		return 0;
+}
 
 /* USER CODE END 4 */
 
