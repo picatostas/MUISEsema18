@@ -42,17 +42,10 @@
 
 /* USER CODE BEGIN Includes */
 #include "fsm.h"
+#include "lights_fsm.h"
+#include "alarm_fsm.h"
 
-#define LIGHT_FLAG  0X01
-#define TIMER_FLAG  0X02
-#define CODE_FLAG   0X04
-#define BUZZ_FLAG   0X08
-#define BUTTON_FLAG 0X10
-#define ALARM_FLAG  0X20
-#define PIR_FLAG    0X40
-#define ARMED_FLAG  0X80
 
-#define __CHECK_FLAG(FLAGS,FLAG) FLAGS & FLAG
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -64,20 +57,9 @@ TIM_HandleTypeDef htim17;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-typedef uint8_t flags;
-flags system_flags = 0x00;
+//typedef uint8_t flags;
+uint8_t system_flags = 0x00;
 
-enum alarm_state{
-  ALM_ARMED,
-  ALM_DISARMED,
-  ALM_INTRUSION
-};
-
-
-enum light_state{
-  LIGHT_ON,
-  LIGHT_OFF
-};
 
 
 
@@ -138,39 +120,14 @@ int main(void)
 
 
   // FSM OUT FUNCS PROTO
-  void turn_on(fsm_t* this);
-  void turn_off(fsm_t* this);
-  void arm(fsm_t* this);
-  void disarm(fsm_t* this);
-  void intrusion(fsm_t* this);
-  // GUARD ACTIONS PROTO
-  int button_pressed(fsm_t* this);
-  int timer_finished(fsm_t* this);
-  int check_BT(fsm_t* this);
-  int sensor_detection(fsm_t* this);
+
+
 
   // TRANSITION TABLES
-  static fsm_trans_t alarm_tt[] = {
 
-    { ALM_DISARMED,           check_BT,      ALM_ARMED,          arm},
-    {    ALM_ARMED, 	      check_BT,   ALM_DISARMED,       disarm},
-    {    ALM_ARMED,   sensor_detection,  ALM_INTRUSION,    intrusion},
-    {ALM_INTRUSION,           check_BT,   ALM_DISARMED,       disarm},
-    {-1, NULL, -1, NULL }
 
-  };
-
-  static fsm_trans_t light_tt[] = {
-
-    { LIGHT_OFF, button_pressed,   LIGHT_ON,    turn_on },
-    {  LIGHT_ON, button_pressed,  LIGHT_OFF,   turn_off },
-    {  LIGHT_ON, timer_finished,  LIGHT_OFF,   turn_off },
-    {-1, NULL, -1, NULL }
-
-  };
-
- fsm_t* alarm_fsm = fsm_new(alarm_tt);
- fsm_t* light_fsm =  fsm_new(light_tt);
+ fsm_t* alarm_fsm =  new_alarm_fsm();
+ fsm_t* light_fsm =  new_lights_fsm();
 
 
   /* USER CODE END 2 */
@@ -479,65 +436,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 	}
 }
 
-void turn_on(fsm_t* this){
 
-	HAL_GPIO_WritePin(LIGHT_LED_GPIO_Port,LIGHT_LED_Pin,GPIO_PIN_SET);
-	HAL_TIM_Base_Start_IT(&htim16);
-}
-void turn_off(fsm_t* this){
-	system_flags &= ~(TIMER_FLAG);
-	HAL_GPIO_WritePin(LIGHT_LED_GPIO_Port,LIGHT_LED_Pin,GPIO_PIN_RESET);
-	HAL_TIM_Base_Stop_IT(&htim16);
-}
-void arm(fsm_t* this){
-	system_flags |=  (ALARM_FLAG);
-	system_flags &= ~(BUZZ_FLAG);
-	HAL_GPIO_WritePin(ALARM_LED_GPIO_Port,ALARM_LED_Pin,GPIO_PIN_SET);
-	HAL_TIM_Base_Stop_IT(&htim14);
-	HAL_GPIO_WritePin(LIGHT_LED_GPIO_Port,LIGHT_LED_Pin,GPIO_PIN_RESET);
-}
-void disarm(fsm_t* this){
-	system_flags &= ~(ALARM_FLAG + BUZZ_FLAG);
-	HAL_TIM_Base_Stop_IT(&htim14);
-	HAL_GPIO_WritePin(ALARM_LED_GPIO_Port,ALARM_LED_Pin,GPIO_PIN_RESET);
-	HAL_TIM_PWM_Stop(&htim1,TIM_CHANNEL_2);
-
-}
-void intrusion(fsm_t* this){
-	system_flags &= ~(PIR_FLAG);
-	HAL_TIM_Base_Start_IT(&htim14);
-}
-// GUARD ACTIONS
-int button_pressed(fsm_t* this){
-	if (__CHECK_FLAG(system_flags,LIGHT_FLAG)){
-		system_flags &= ~(LIGHT_FLAG);
-		return 1;
-	}
-	else
-		return 0;
-}
-int timer_finished(fsm_t* this){
-	if (__CHECK_FLAG(system_flags,TIMER_FLAG)) {
-		return 1;
-	}
-	else
-		return 0;
-}
-int check_BT(fsm_t* this){
-	if (__CHECK_FLAG(system_flags,BUTTON_FLAG)){
-		system_flags &= ~(BUTTON_FLAG);
-		return 1;
-	}
-	else
-		return 0;
-}
-int sensor_detection(fsm_t* this){
-	if ((__CHECK_FLAG(system_flags,ALARM_FLAG)) && (__CHECK_FLAG(system_flags,PIR_FLAG))) {
-		return 1;
-	}
-	else
-		return 0;
-}
 
 /* USER CODE END 4 */
 

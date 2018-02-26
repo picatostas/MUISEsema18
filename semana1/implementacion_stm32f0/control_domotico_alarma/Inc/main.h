@@ -78,7 +78,16 @@
 /* #define USE_FULL_ASSERT    1U */
 
 /* USER CODE BEGIN Private defines */
+#define LIGHT_FLAG  0X01
+#define TIMER_FLAG  0X02
+#define CODE_FLAG   0X04
+#define BUZZ_FLAG   0X08
+#define BUTTON_FLAG 0X10
+#define ALARM_FLAG  0X20
+#define PIR_FLAG    0X40
+#define ARMED_FLAG  0X80
 
+#define __CHECK_FLAG(FLAGS,FLAG) FLAGS & FLAG
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
