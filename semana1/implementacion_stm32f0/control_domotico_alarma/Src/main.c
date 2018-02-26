@@ -42,6 +42,17 @@
 
 /* USER CODE BEGIN Includes */
 #include "fsm.h"
+
+#define LIGHT_FLAG  0X01
+#define TIMER_FLAG  0X02
+#define CODE_FLAG   0X04
+#define BUZZ_FLAG   0X08
+#define BUTTON_FLAG 0X10
+#define ALARM_FLAG  0X20
+#define PIR_FLAG    0X40
+#define ARMED_FLAG  0X80
+
+#define __CHECK_FLAG(FLAGS,FLAG) FLAGS & FLAG
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -53,8 +64,9 @@ TIM_HandleTypeDef htim17;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-int light_flag = 0, timer_flag = 0, code_flag = 0,buzz_flag = 0,
-		bt_flag = 0, alarm_flag = 0,pir_flag = 0, armed_flag = 0;
+typedef uint8_t flags;
+flags system_flags = 0x00;
+
 enum alarm_state{
   ALM_ARMED,
   ALM_DISARMED,
@@ -167,7 +179,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1){
 	  fsm_fire(alarm_fsm);
-	  if (alarm_fsm->current_state == ALM_DISARMED) {
+	  if (alarm_fsm->current_state == ALM_DISARMED){
 		  fsm_fire(light_fsm);
 	  }
 	  /*
@@ -426,23 +438,26 @@ static void MX_GPIO_Init(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
 	if(htim->Instance == TIM16){
-		timer_flag = 1;
+
+		system_flags |= TIMER_FLAG;
 	}
 	if (htim->Instance == TIM6){ // debounce control luz
 
-		light_flag = 1;
+		system_flags |= LIGHT_FLAG;
 		HAL_TIM_Base_Stop_IT(&htim6);
 	}
 	if (htim->Instance == TIM17){ // debounce pulsador armado
-		bt_flag = 1;
+
+		system_flags |= BUTTON_FLAG;
 		HAL_TIM_Base_Stop_IT(&htim17);
 	}
 	if (htim->Instance == TIM14){
-		buzz_flag = !buzz_flag;
+
+		system_flags ^= BUZZ_FLAG;
 		HAL_GPIO_TogglePin(ALARM_LED_GPIO_Port,ALARM_LED_Pin);
-		if (buzz_flag) {
+
+		if ( (__CHECK_FLAG(system_flags,BUZZ_FLAG)) )
 			HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_2);
-		}
 		else
 			HAL_TIM_PWM_Stop(&htim1,TIM_CHANNEL_2);
 	}
@@ -456,8 +471,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 		HAL_TIM_Base_Start_IT(&htim17);
 	}
 	if (GPIO_Pin == PIR_SENSOR_Pin){
-		if (alarm_flag) {
-			pir_flag = 1;
+
+		if (__CHECK_FLAG(system_flags,ALARM_FLAG)) {
+			system_flags |= PIR_FLAG;
 		}
 
 	}
@@ -469,55 +485,54 @@ void turn_on(fsm_t* this){
 	HAL_TIM_Base_Start_IT(&htim16);
 }
 void turn_off(fsm_t* this){
-	timer_flag = 0;
+	system_flags &= ~(TIMER_FLAG);
 	HAL_GPIO_WritePin(LIGHT_LED_GPIO_Port,LIGHT_LED_Pin,GPIO_PIN_RESET);
 	HAL_TIM_Base_Stop_IT(&htim16);
 }
 void arm(fsm_t* this){
-	alarm_flag = 1;
+	system_flags |=  (ALARM_FLAG);
+	system_flags &= ~(BUZZ_FLAG);
 	HAL_GPIO_WritePin(ALARM_LED_GPIO_Port,ALARM_LED_Pin,GPIO_PIN_SET);
 	HAL_TIM_Base_Stop_IT(&htim14);
 	HAL_GPIO_WritePin(LIGHT_LED_GPIO_Port,LIGHT_LED_Pin,GPIO_PIN_RESET);
-	buzz_flag = 0;
 }
 void disarm(fsm_t* this){
-	alarm_flag = 0;
+	system_flags &= ~(ALARM_FLAG + BUZZ_FLAG);
 	HAL_TIM_Base_Stop_IT(&htim14);
 	HAL_GPIO_WritePin(ALARM_LED_GPIO_Port,ALARM_LED_Pin,GPIO_PIN_RESET);
-	buzz_flag = 0;
 	HAL_TIM_PWM_Stop(&htim1,TIM_CHANNEL_2);
 
 }
 void intrusion(fsm_t* this){
-	pir_flag = 0;
+	system_flags &= ~(PIR_FLAG);
 	HAL_TIM_Base_Start_IT(&htim14);
 }
 // GUARD ACTIONS
 int button_pressed(fsm_t* this){
-	if (light_flag){
-		light_flag = 0;
+	if (__CHECK_FLAG(system_flags,LIGHT_FLAG)){
+		system_flags &= ~(LIGHT_FLAG);
 		return 1;
 	}
 	else
 		return 0;
 }
 int timer_finished(fsm_t* this){
-	if (timer_flag) {
+	if (__CHECK_FLAG(system_flags,TIMER_FLAG)) {
 		return 1;
 	}
 	else
 		return 0;
 }
 int check_BT(fsm_t* this){
-	if (bt_flag){
-		bt_flag = 0;
+	if (__CHECK_FLAG(system_flags,BUTTON_FLAG)){
+		system_flags &= ~(BUTTON_FLAG);
 		return 1;
 	}
 	else
 		return 0;
 }
 int sensor_detection(fsm_t* this){
-	if (alarm_flag && pir_flag) {
+	if ((__CHECK_FLAG(system_flags,ALARM_FLAG)) && (__CHECK_FLAG(system_flags,PIR_FLAG))) {
 		return 1;
 	}
 	else
