@@ -4,10 +4,12 @@
 #include "main.h"
 #include "stm32f0xx_hal.h"
 
-extern TIM_HandleTypeDef htim1,htim6,
-htim14,
-htim16,
-htim17;
+extern TIM_HandleTypeDef  htim1,
+						  htim6,
+						 htim14,
+						 htim16,
+						 htim17;
+
 
 extern uint8_t system_flags;
 

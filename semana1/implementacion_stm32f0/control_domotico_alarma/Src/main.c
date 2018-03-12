@@ -44,7 +44,7 @@
 #include "fsm.h"
 #include "lights_fsm.h"
 #include "alarm_fsm.h"
-
+#include "code_fsm.h"
 
 /* USER CODE END Includes */
 
@@ -139,14 +139,6 @@ int main(void)
 	  if (alarm_fsm->current_state == ALM_DISARMED){
 		  fsm_fire(light_fsm);
 	  }
-	  /*
-	  if (alarm_fsm->current_state == ALM_ARMED){
-	  	  alarm_flag = 1;
-	  }
-	  else
-		  alarm_flag = 0;
-
-	  */
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
