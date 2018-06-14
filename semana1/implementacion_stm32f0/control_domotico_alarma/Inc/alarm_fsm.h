@@ -14,7 +14,7 @@ extern TIM_HandleTypeDef  htim1,
 extern uint8_t system_flags;
 
 enum alarm_state{
-  ALM_ARMED,
+	 ALM_ARMED,
   ALM_DISARMED,
   ALM_INTRUSION
 };
@@ -22,7 +22,7 @@ enum alarm_state{
 void arm(fsm_t* this);
 void disarm(fsm_t* this);
 void intrusion(fsm_t* this);
-int check_BT(fsm_t* this);
+int check_code_ok(fsm_t* this);
 int sensor_detection(fsm_t* this);
 fsm_t* new_alarm_fsm(void);
 

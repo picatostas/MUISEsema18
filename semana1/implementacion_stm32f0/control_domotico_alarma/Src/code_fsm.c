@@ -6,67 +6,63 @@
  */
 #include "code_fsm.h"
 
-static fsm_trans_t code_tt[] = {
-  { 		CODE_IDLE,    button_pressed,    CODE_PARSE_DIGIT,   init_code  		 },
-  {  CODE_PARSE_DIGIT, 	     valid_pulse, 	 CODE_PARSE_DIGIT,   increment_digit 	 },
-  {  CODE_PARSE_DIGIT,     pulse_timeout, 	 CODE_PARSE_DIGIT,   store_digit		 },
-  {  CODE_PARSE_DIGIT,     check_ok_code, 		    CODE_IDLE,   change_alarm_status },
-  {  CODE_PARSE_DIGIT,  check_wrong_code, 		    CODE_IDLE, 	 NULL   			 },
-  {-1, NULL, -1, NULL }
-};
-int button_pressed(fsm_t * this){
 
-	return (__CHECK_FLAG(system_flags,BUTTON_FLAG));
+
+static int code_introduced(fsm_t * this){
+ return code_ready;
 }
-int valid_pulse(fsm_t * this){
+static int button_pressed(fsm_t * this){
 
-	if((__CHECK_FLAG(system_flags,BUTTON_FLAG)) && bt_timer_timeout)
+	if((__CHECK_FLAG(system_flags,BUTTON_FLAG)) && !bt_timer_timeout)
 		return 1;
 	else
 		return 0;
 }
-int pulse_timeout(fsm_t * this){
-
+static int bt_timeout(fsm_t * this){
 	return bt_timer_timeout;
 }
-int check_ok_code(fsm_t * this){
+static void check_code(fsm_t * this){
 
-	int code_ok = 0;
+	code_ok = 0;
 	for (int i = 0; i < 3; i++) {
 		if(code_in[i] == alarm_code[i]){
 			code_ok = 1;
 		}
-		else
+		else{
 			code_ok = 0;
 			break;
-	}
-	return code_ok;
-}
-int check_wrong_code(fsm_t * this){
+		}
+		}
 
-	return !(check_ok_code(this));
+	code_ready = 0;
+	for (int i = 0; i < 3; i++)
+		code_in[i] = 0;
 }
-void init_code(fsm_t * this){
-	count = 0;
-	digit_count = 0;
-}
-void increment_digit(fsm_t * this){
-	count++;
+static void next_digit(fsm_t * this){
 
-}
-void store_digit(fsm_t * this){
-
-	code_in[digit_count] = count;
-	count = 0;
+	bt_timer_timeout = 0;
 	digit_count++;
-	if(digit_count>2){
-		digit_count = 0;
+	if (digit_count == 3){
+		code_ready = 1;
+		digit_count= 0;
 	}
 }
-void change_alarm_status(fsm_t * this){
+static void increment_digit(fsm_t * this){
 
-	system_flags ^= ALARM_FLAG;
+	HAL_TIM_Base_Stop_IT(&htim3);
+	HAL_TIM_Base_Start_IT(&htim3);
+	code_in[digit_count]++;
+	system_flags &= ~(BUTTON_FLAG);
+	bt_timer_timeout = 0;
+
 }
+
+static fsm_trans_t code_tt[] = {
+  {  CODE_PARSE,      button_pressed,       CODE_PARSE,   increment_digit  	 },
+  {  CODE_PARSE,      	  bt_timeout, 	    CODE_PARSE,   next_digit		 },
+  {  CODE_PARSE,     code_introduced,       CODE_PARSE,   check_code		 },
+  {-1, NULL, -1, NULL }
+};
 
 fsm_t * new_code_fsm(void){
 	return fsm_new(code_tt);
