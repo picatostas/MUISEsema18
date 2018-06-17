@@ -52,6 +52,7 @@ TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim6;
 TIM_HandleTypeDef htim14;
+TIM_HandleTypeDef htim15;
 TIM_HandleTypeDef htim16;
 TIM_HandleTypeDef htim17;
 
@@ -59,7 +60,9 @@ TIM_HandleTypeDef htim17;
 /* Private variables ---------------------------------------------------------*/
 //typedef uint8_t flags;
 uint8_t system_flags = 0x00;
-
+uint32_t code_now,code_prev, code_diff;
+uint32_t alarm_now,alarm_prev, alarm_diff;
+uint32_t lights_now,lights_prev, lights_diff;
 
 
 
@@ -73,7 +76,8 @@ static void MX_TIM6_Init(void);
 static void MX_TIM14_Init(void);
 static void MX_TIM16_Init(void);
 static void MX_TIM17_Init(void);
-static void MX_TIM3_Init(void);                                    
+static void MX_TIM3_Init(void);
+static void MX_TIM15_Init(void);                                    
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
                                 
 
@@ -121,6 +125,7 @@ int main(void)
   MX_TIM16_Init();
   MX_TIM17_Init();
   MX_TIM3_Init();
+  MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
 
 
@@ -149,11 +154,29 @@ for (int i = 0; i < 3; i++)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1){
+
+
+	  HAL_TIM_Base_Start(&htim15);
+	  code_prev = __HAL_TIM_GET_COUNTER(&htim15);
 	  fsm_fire(code_fsm);
+	  code_now = __HAL_TIM_GET_COUNTER(&htim15);
+	  code_diff = code_now-code_prev;
+	  HAL_TIM_Base_Stop(&htim15);
+
+	  HAL_TIM_Base_Start(&htim15);
+	  alarm_prev = __HAL_TIM_GET_COUNTER(&htim15);
 	  fsm_fire(alarm_fsm);
-	  if (alarm_fsm->current_state == ALM_DISARMED){
-		  fsm_fire(light_fsm);
-	  }
+	  alarm_now = __HAL_TIM_GET_COUNTER(&htim15);
+	  alarm_diff = alarm_now-alarm_prev;
+	  HAL_TIM_Base_Stop(&htim15);
+	//  if (alarm_fsm->current_state == ALM_DISARMED){
+	  HAL_TIM_Base_Start(&htim15);
+	  lights_prev = __HAL_TIM_GET_COUNTER(&htim15);
+	  fsm_fire(light_fsm);
+	  lights_now = __HAL_TIM_GET_COUNTER(&htim15);
+	  lights_diff = lights_now-lights_prev;
+	  HAL_TIM_Base_Stop(&htim15);
+	//  }
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
@@ -332,6 +355,40 @@ static void MX_TIM14_Init(void)
   htim14.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim14.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim14) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+}
+
+/* TIM15 init function */
+static void MX_TIM15_Init(void)
+{
+
+  TIM_ClockConfigTypeDef sClockSourceConfig;
+  TIM_MasterConfigTypeDef sMasterConfig;
+
+  htim15.Instance = TIM15;
+  htim15.Init.Prescaler = 48;
+  htim15.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim15.Init.Period = 3000;
+  htim15.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim15.Init.RepetitionCounter = 0;
+  htim15.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim15) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim15, &sClockSourceConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim15, &sMasterConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
