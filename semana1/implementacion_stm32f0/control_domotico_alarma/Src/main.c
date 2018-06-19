@@ -63,6 +63,7 @@ uint8_t system_flags = 0x00;
 uint32_t code_now,code_prev, code_diff;
 uint32_t alarm_now,alarm_prev, alarm_diff;
 uint32_t lights_now,lights_prev, lights_diff;
+uint32_t now,last,period;
 
 
 
@@ -153,30 +154,17 @@ for (int i = 0; i < 3; i++)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+ period = 100; // ms
+ last = HAL_GetTick(); // devuelve 1 tick por 1 ms segun la config del reloj
   while (1){
 
 
-	  HAL_TIM_Base_Start(&htim15);
-	  code_prev = __HAL_TIM_GET_COUNTER(&htim15);
 	  fsm_fire(code_fsm);
-	  code_now = __HAL_TIM_GET_COUNTER(&htim15);
-	  code_diff = code_now-code_prev;
-	  HAL_TIM_Base_Stop(&htim15);
-
-	  HAL_TIM_Base_Start(&htim15);
-	  alarm_prev = __HAL_TIM_GET_COUNTER(&htim15);
 	  fsm_fire(alarm_fsm);
-	  alarm_now = __HAL_TIM_GET_COUNTER(&htim15);
-	  alarm_diff = alarm_now-alarm_prev;
-	  HAL_TIM_Base_Stop(&htim15);
-	//  if (alarm_fsm->current_state == ALM_DISARMED){
-	  HAL_TIM_Base_Start(&htim15);
-	  lights_prev = __HAL_TIM_GET_COUNTER(&htim15);
 	  fsm_fire(light_fsm);
-	  lights_now = __HAL_TIM_GET_COUNTER(&htim15);
-	  lights_diff = lights_now-lights_prev;
-	  HAL_TIM_Base_Stop(&htim15);
-	//  }
+	  now = HAL_GetTick();
+	  HAL_Delay(period - ( now - last ));
+	  last = HAL_GetTick();
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
