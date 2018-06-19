@@ -1,0 +1,20 @@
+never spec {    /* !((([] ((! (((alm_state==armed)) && (! (code_ok)))) || (! (<> ((! (alm_state)) || (disarmed)))))) && ([] ((! (((alm_state==intrusion)) && (! (code_ok)))) || (! (<> ((! (alm_state)) || (disarmed))))))) && ([] ((! (((alm_state==armed)) && (pir_sensor))) || (<> ((! (alm_state)) || (intrusion)))))) */
+T0_init:
+	do
+	:: (! ((! (((alm_state==armed)) && (pir_sensor)))) && ! (((! (alm_state)) || (intrusion)))) -> goto accept_S6
+	:: atomic { (((! ((! (((alm_state==armed)) && (! (code_ok))))) && ((! (alm_state)) || (disarmed))) || (! ((! (((alm_state==intrusion)) && (! (code_ok))))) && ((! (alm_state)) || (disarmed))))) -> assert(!(((! ((! (((alm_state==armed)) && (! (code_ok))))) && ((! (alm_state)) || (disarmed))) || (! ((! (((alm_state==intrusion)) && (! (code_ok))))) && ((! (alm_state)) || (disarmed)))))) }
+	:: (((! ((! (((alm_state==armed)) && (! (code_ok)))))) || (! ((! (((alm_state==intrusion)) && (! (code_ok)))))))) -> goto T0_S14
+	:: (1) -> goto T0_init
+	od;
+accept_S6:
+	do
+	:: (! (((! (alm_state)) || (intrusion)))) -> goto accept_S6
+	od;
+T0_S14:
+	do
+	:: atomic { (((! (alm_state)) || (disarmed))) -> assert(!(((! (alm_state)) || (disarmed)))) }
+	:: (1) -> goto T0_S14
+	od;
+accept_all:
+	skip
+}
