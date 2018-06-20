@@ -1,0 +1,62 @@
+==14496== Cachegrind, a cache and branch-prediction profiler
+==14496== Copyright (C) 2002-2015, and GNU GPL'd, by Nicholas Nethercote et al.
+==14496== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==14496== Command: ./process_pgm
+==14496== 
+--14496-- warning: L3 cache found, using its data for the LL simulation.
+Opening input file input.pgm
+Reading file header info
+Reading pixel data from file input.pgm
+Closing input file input.pgm
+Inverting colours...OK
+Opening output file inverted_image.pgm
+Printing file header to file inverted_image.pgm
+Printing pixel data to file inverted_image.pgm
+Closing output file inverted_image.pgm
+Opening input file input.pgm
+Reading file header info
+Reading pixel data from file input.pgm
+Closing input file input.pgm
+Applying threshold...OK
+Opening output file thresholded_image.pgm
+Printing file header to file thresholded_image.pgm
+Printing pixel data to file thresholded_image.pgm
+Closing output file thresholded_image.pgm
+Opening input file input.pgm
+Reading file header info
+Reading pixel data from file input.pgm
+Closing input file input.pgm
+Detecting horizontal edges...OK
+Opening output file horizontal_edges.pgm
+Printing file header to file horizontal_edges.pgm
+Printing pixel data to file horizontal_edges.pgm
+Closing output file horizontal_edges.pgm
+Opening input file input.pgm
+Reading file header info
+Reading pixel data from file input.pgm
+Closing input file input.pgm
+Detecting vertical edges...OK
+Opening output file vertical_edges.pgm
+Printing file header to file vertical_edges.pgm
+Printing pixel data to file vertical_edges.pgm
+Closing output file vertical_edges.pgm
+==14496== 
+==14496== I   refs:      1,705,975,939
+==14496== I1  misses:            1,506
+==14496== LLi misses:            1,277
+==14496== I1  miss rate:          0.00%
+==14496== LLi miss rate:          0.00%
+==14496== 
+==14496== D   refs:        695,590,688  (423,368,969 rd   + 272,221,719 wr)
+==14496== D1  misses:          254,011  (    169,881 rd   +      84,130 wr)
+==14496== LLd misses:           23,439  (      2,085 rd   +      21,354 wr)
+==14496== D1  miss rate:           0.0% (        0.0%     +         0.0%  )
+==14496== LLd miss rate:           0.0% (        0.0%     +         0.0%  )
+==14496== 
+==14496== LL refs:             255,517  (    171,387 rd   +      84,130 wr)
+==14496== LL misses:            24,716  (      3,362 rd   +      21,354 wr)
+==14496== LL miss rate:            0.0% (        0.0%     +         0.0%  )
+==14496== 
+==14496== Branches:        304,873,960  (294,380,202 cond +  10,493,758 ind)
+==14496== Mispredicts:       3,498,698  (  3,498,526 cond +         172 ind)
+==14496== Mispred rate:            1.1% (        1.2%     +         0.0%   )

@@ -1,0 +1,8 @@
+File 'process_pgm.c'
+Lines executed:89.09% of 110
+Creating 'process_pgm.c.gcov'
+
+File '/usr/include/x86_64-linux-gnu/bits/stdio2.h'
+Lines executed:100.00% of 2
+Creating 'stdio2.h.gcov'
+

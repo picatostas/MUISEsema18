@@ -1,0 +1,343 @@
+--------------------------------------------------------------------------------
+I1 cache:         32768 B, 64 B, 8-way associative
+D1 cache:         32768 B, 64 B, 8-way associative
+LL cache:         3145728 B, 64 B, 12-way associative
+Command:          ./process_pgm
+Data file:        cachegrind.out.process_pgm
+Events recorded:  Ir I1mr ILmr Dr D1mr DLmr Dw D1mw DLmw Bc Bcm Bi Bim
+Events shown:     Ir I1mr ILmr Dr D1mr DLmr Dw D1mw DLmw Bc Bcm Bi Bim
+Event sort order: Ir I1mr ILmr Dr D1mr DLmr Dw D1mw DLmw Bc Bcm Bi Bim
+Thresholds:       0.1 100 100 100 100 100 100 100 100 100 100 100 100
+Include dirs:     
+User annotated:   
+Auto-annotation:  on
+
+--------------------------------------------------------------------------------
+           Ir  I1mr  ILmr          Dr    D1mr  DLmr          Dw   D1mw   DLmw          Bc       Bcm         Bi Bim 
+--------------------------------------------------------------------------------
+1,705,975,939 1,506 1,277 423,368,969 169,881 2,085 272,221,719 84,130 21,354 294,380,202 3,498,526 10,493,758 172  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+         Ir I1mr ILmr          Dr   D1mr DLmr         Dw   D1mw   DLmw          Bc       Bcm        Bi Bim  file:function
+--------------------------------------------------------------------------------
+594,313,692  122   75 155,656,920    106   70 91,802,348 82,963 20,737 111,983,152 1,318,649 2,621,480   3  /build/glibc-Cl5G7W/glibc-2.23/stdio-common/vfscanf.c:_IO_vfscanf
+388,781,844   73   50 122,309,716     81    7 83,437,627     58      0  60,275,016    91,897 5,243,024  21  /build/glibc-Cl5G7W/glibc-2.23/stdio-common/vfprintf.c:vfprintf
+186,165,616   32   17  26,684,200      4    0 17,039,464      0      0  45,167,592 1,536,062         0   0  /build/glibc-Cl5G7W/glibc-2.23/stdlib/../stdlib/strtol_l.c:____strtol_l_internal
+128,468,583    8    8  27,529,740     18    1 20,972,898     12      0  14,420,618       829       844   2  /build/glibc-Cl5G7W/glibc-2.23/libio/fileops.c:_IO_file_xsputn@@GLIBC_2.2.5
+ 64,225,476   11    5  17,039,412      0    0 14,417,964      0      0   9,175,068        39         0   0  /build/glibc-Cl5G7W/glibc-2.23/debug/fprintf_chk.c:__fprintf_chk
+ 55,050,912   10    6  14,418,096      0    0 14,418,096      0      0   6,553,680        47         0   0  /build/glibc-Cl5G7W/glibc-2.23/stdio-common/isoc99_fscanf.c:__isoc99_fscanf
+ 52,431,008    8    5   5,243,120     46    8          0      0      0   5,243,056        25         0   0  /build/glibc-Cl5G7W/glibc-2.23/string/../sysdeps/x86_64/strchr.S:strchrnul
+ 48,778,131    3    3   5,642,229      0    0  3,021,316    284     20  15,725,529   432,053         0   0  /build/glibc-Cl5G7W/glibc-2.23/string/../sysdeps/x86_64/memcpy.S:__GI_mempcpy
+ 39,322,260    2    2  15,728,904      0    0  5,242,968      0      0   5,242,968        25         0   0  /build/glibc-Cl5G7W/glibc-2.23/libio/genops.c:_IO_sputbackc
+ 38,713,012    6    3   3,444,539      4    1  2,133,811      0      0   3,444,539   106,264         0   0  /build/glibc-Cl5G7W/glibc-2.23/stdio-common/_itoa.c:_itoa_word
+ 18,350,332    4    1   3,932,212      0    0  5,242,948      3      0   1,310,736         6         0   0  /build/glibc-Cl5G7W/glibc-2.23/stdio-common/../include/scratch_buffer.h:_IO_vfscanf
+ 15,728,688    1    1   6,553,620      0    0  2,621,448      0      0   5,242,896        16         0   0  /build/glibc-Cl5G7W/glibc-2.23/debug/../libio/libioP.h:__fprintf_chk
+ 14,438,664   12    5   1,314,860      8    0  1,310,780      0      0   2,625,560     2,059         0   0  /home/pablo/MISE/SEMA/sema2018/semana2/10/images/process_pgm.c:load_image_from_file
+ 14,418,096    4    1   7,864,416      0    0  1,310,736      0      0   5,242,944         6         0   0  /build/glibc-Cl5G7W/glibc-2.23/stdio-common/../libio/libioP.h:__isoc99_fscanf
+ 13,107,560    0    0           0      0    0  6,553,780      5      0           0         0         0   0  /build/glibc-Cl5G7W/glibc-2.23/stdio-common/printf-parse.h:vfprintf
+  7,872,680    3    3   1,310,740 82,948    0  1,312,800      0      0           0         0         0   0  /usr/include/x86_64-linux-gnu/bits/stdio2.h:save_image_to_file
+  5,261,428    3    3   1,314,848      4    0         36      0      0   1,314,820     2,061         0   0  /home/pablo/MISE/SEMA/sema2018/semana2/10/images/process_pgm.c:save_image_to_file
+  4,586,256    3    3     654,599 20,736    0    327,048      0      0     328,063       547         0   0  /home/pablo/MISE/SEMA/sema2018/semana2/10/images/process_pgm.c:vertical_edge_detect
+  4,584,469    2    2     654,340 20,736    0    327,171      0      0     328,193       535         0   0  /home/pablo/MISE/SEMA/sema2018/semana2/10/images/process_pgm.c:horizontal_edge_detect
+  3,932,184    1    1   2,621,456      0    0          0      0      0           0         0         0   0  /build/glibc-Cl5G7W/glibc-2.23/stdlib/../stdlib/strtol.c:__strtol_internal
+  2,626,147   32   20   2,623,755     34    0         43      1      1          11         6 2,623,716  33  ???:???
+  2,297,879    2    2     327,684 20,736    0    327,683      0      0     328,705       542         0   0  /home/pablo/MISE/SEMA/sema2018/semana2/10/images/process_pgm.c:apply_threshold
+  1,967,120    3    3     327,171 20,736    0    327,170      0      0     328,193       540         0   0  /home/pablo/MISE/SEMA/sema2018/semana2/10/images/process_pgm.c:invert_colours
+
+--------------------------------------------------------------------------------
+-- Auto-annotated source: /home/pablo/MISE/SEMA/sema2018/semana2/10/images/process_pgm.c
+--------------------------------------------------------------------------------
+       Ir I1mr ILmr        Dr   D1mr DLmr        Dw D1mw DLmw        Bc   Bcm Bi Bim 
+
+-- line 30 ----------------------------------------
+        .    .    .         .      .    .         .    .    .         .     .  .   .  // Image processing functions
+        .    .    .         .      .    .         .    .    .         .     .  .   .  void invert_colours();
+        .    .    .         .      .    .         .    .    .         .     .  .   .  void apply_threshold(int);
+        .    .    .         .      .    .         .    .    .         .     .  .   .  int count_white_pixels();
+        .    .    .         .      .    .         .    .    .         .     .  .   .  void horizontal_edge_detect(int);
+        .    .    .         .      .    .         .    .    .         .     .  .   .  void vertical_edge_detect(int);
+        .    .    .         .      .    .         .    .    .         .     .  .   .  
+        .    .    .         .      .    .         .    .    .         .     .  .   .  int main()
+        3    1    1         0      0    0         2    0    0         0     0  0   0  {
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // Try out the invert colours function
+        2    0    0         0      0    0         1    0    0         0     0  0   0    load_image_from_file("input.pgm");
+        2    0    0         0      0    0         1    0    0         0     0  0   0    invert_colours();
+        2    0    0         0      0    0         1    0    0         0     0  0   0    save_image_to_file("inverted_image.pgm");
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // Try out the image threshold function
+        2    0    0         0      0    0         1    0    0         0     0  0   0    load_image_from_file("input.pgm");
+        2    0    0         0      0    0         1    0    0         0     0  0   0    apply_threshold(127);
+        2    1    1         0      0    0         1    0    0         0     0  0   0    save_image_to_file("thresholded_image.pgm");
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    int edge_threshold = 30;
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // Horizontal edge detect
+        2    0    0         0      0    0         1    0    0         0     0  0   0    load_image_from_file("input.pgm");
+        2    0    0         0      0    0         1    0    0         0     0  0   0    horizontal_edge_detect(edge_threshold);
+        2    0    0         0      0    0         1    0    0         0     0  0   0    save_image_to_file("horizontal_edges.pgm");
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // Vertical edge detect
+        2    0    0         0      0    0         1    0    0         0     0  0   0    load_image_from_file("input.pgm");
+        2    0    0         0      0    0         1    0    0         0     0  0   0    vertical_edge_detect(edge_threshold);
+        2    0    0         0      0    0         1    0    0         0     0  0   0    save_image_to_file("vertical_edges.pgm");
+        .    .    .         .      .    .         .    .    .         .     .  .   .  
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // exit normally
+        .    .    .         .      .    .         .    .    .         .     .  .   .    return 0;
+        3    1    0         2      0    0         0    0    0         0     0  0   0  }
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .  void load_image_from_file(char filename[])
+       56    4    2         4      0    0        36    0    0         0     0  0   0  {
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // Variables
+        .    .    .         .      .    .         .    .    .         .     .  .   .    FILE *f;
+        .    .    .         .      .    .         .    .    .         .     .  .   .    char line[200];
+        .    .    .         .      .    .         .    .    .         .     .  .   .    int x, y;
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // Open input image file
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("Opening input file %s\n", filename);
+       16    0    0         0      0    0         4    0    0         0     0  0   0    f = fopen(filename, "r");
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // Read 4 header lines.
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // These will just be ignored, but we need to read
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // them to get down to the table of numbers further
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // down in the file.
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("Reading file header info\n");
+       28    2    1         0      0    0         4    0    0         4     0  0   0    assert(1 == fscanf(f, "%[^\n]\n", line));
+       28    0    0         0      0    0         4    0    0         4     0  0   0    assert(1 == fscanf(f, "%[^\n]\n", line));
+       32    2    1         0      0    0         4    0    0         4     0  0   0    assert(2 == fscanf(f, "%d %d\n", &w, &h));
+       28    0    0         0      0    0         4    0    0         4     0  0   0    assert(1 == fscanf(f, "%[^\n]\n", line));
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // Read pixel data into 2-D array
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("Reading pixel data from file %s\n", filename);
+        .    .    .         .      .    .         .    .    .         .     .  .   .    y = 0;
+    4,120    0    0     2,052      0    0         0    0    0     2,052     6  0   0    while (y < h) {
+        .    .    .         .      .    .         .    .    .         .     .  .   .      x = 0;
+2,633,728    0    0 1,312,768      0    0         0    0    0 1,312,768 2,053  0   0      while (x < w) {
+9,175,040    4    1         0      0    0 1,310,720    0    0 1,310,720     0  0   0        assert (1 == fscanf(f, "%d", &p[y][x]));
+2,621,440    0    0         0      0    0         0    0    0         0     0  0   0        x = x + 1;
+        .    .    .         .      .    .         .    .    .         .     .  .   .      }
+    4,096    0    0         0      0    0         0    0    0         0     0  0   0      y = y + 1;
+        .    .    .         .      .    .         .    .    .         .     .  .   .    }
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // Close input file
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("Closing input file %s\n", filename);
+        8    0    0         0      0    0         4    0    0         0     0  0   0    fclose(f);
+       44    0    0        36      8    0         0    0    0         4     0  0   0  }
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .  void save_image_to_file(char filename[])
+       40    1    1         0      0    0        32    0    0         0     0  0   0  {
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // variables
+        .    .    .         .      .    .         .    .    .         .     .  .   .    FILE *f;
+        .    .    .         .      .    .         .    .    .         .     .  .   .    int x, y;
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // open output file
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("Opening output file %s\n", filename);
+       16    1    1         4      0    0         4    0    0         0     0  0   0    f = fopen(filename, "w");
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // Print header info into file
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("Printing file header to file %s\n", filename);
+        .    .    .         .      .    .         .    .    .         .     .  .   .    fprintf(f, "P2\n");
+        .    .    .         .      .    .         .    .    .         .     .  .   .    fprintf(f, "# My PGM file\n");
+        .    .    .         .      .    .         .    .    .         .     .  .   .    fprintf(f, "%d %d\n", w, h);
+        .    .    .         .      .    .         .    .    .         .     .  .   .    fprintf(f, "255\n");
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // Print pixel data into file
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("Printing pixel data to file %s\n", filename);
+        .    .    .         .      .    .         .    .    .         .     .  .   .    y = 0;
+    4,120    1    1     2,052      0    0         0    0    0     2,052     7  0   0    while (y < h) {
+        .    .    .         .      .    .         .    .    .         .     .  .   .      x = 0;
+2,633,728    0    0 1,312,768      0    0         0    0    0 1,312,768 2,054  0   0      while (x < w) {
+        .    .    .         .      .    .         .    .    .         .     .  .   .        fprintf(f, "%d ", p[y][x]);
+2,621,440    0    0         0      0    0         0    0    0         0     0  0   0        x = x + 1;
+        .    .    .         .      .    .         .    .    .         .     .  .   .      }
+        .    .    .         .      .    .         .    .    .         .     .  .   .      fprintf(f, "\n");
+    2,048    0    0         0      0    0         0    0    0         0     0  0   0      y = y + 1;
+        .    .    .         .      .    .         .    .    .         .     .  .   .    }
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // Close file
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("Closing output file %s\n", filename);
+        8    0    0         0      0    0         0    0    0         0     0  0   0    fclose(f);
+       28    0    0        24      4    0         0    0    0         0     0  0   0  }
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .  void invert_colours(int threshold)
+        3    1    1         0      0    0         2    0    0         0     0  0   0  {
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // variables
+        .    .    .         .      .    .         .    .    .         .     .  .   .    int x, y;
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // Modify all pixel values one at a time
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("Inverting colours...");
+        .    .    .         .      .    .         .    .    .         .     .  .   .    y = 0;
+    1,030    1    1         2      0    0         0    0    0       513     3  0   0    while (y < h) {
+        .    .    .         .      .    .         .    .    .         .     .  .   .      x = 1;
+  657,408    0    0         0      0    0         0    0    0   327,680   537  0   0      while (x < w) {
+1,308,678    1    1   327,168 20,735    0   327,168    0    0         0     0  0   0        p[y][x] = 255 - p[y][x];
+        .    .    .         .      .    .         .    .    .         .     .  .   .        x = x + 1;
+        .    .    .         .      .    .         .    .    .         .     .  .   .      }
+        .    .    .         .      .    .         .    .    .         .     .  .   .      y = y + 1;
+        .    .    .         .      .    .         .    .    .         .     .  .   .    }
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("OK\n");
+        1    0    0         1      1    0         0    0    0         0     0  0   0  }
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .  void apply_threshold(int threshold)
+        6    0    0         0      0    0         3    0    0         0     0  0   0  {
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // variables
+        .    .    .         .      .    .         .    .    .         .     .  .   .    int x, y;
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // Modify all pixel values one at a time
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("Applying threshold...");
+        .    .    .         .      .    .         .    .    .         .     .  .   .    y = 0;
+    1,030    1    1         2      0    0         0    0    0       513     3  0   0    while (y < h) {
+        .    .    .         .      .    .         .    .    .         .     .  .   .      x = 0;
+  658,432    0    0         0      0    0         0    0    0   328,192   539  0   0      while (x < w) {
+        .    .    .         .      .    .         .    .    .         .     .  .   .        if (p[y][x] > threshold) {
+1,638,408    1    1   327,680 20,735    0   327,680    0    0         0     0  0   0  	p[y][x] = 255;
+        .    .    .         .      .    .         .    .    .         .     .  .   .        }
+        .    .    .         .      .    .         .    .    .         .     .  .   .        else {
+        .    .    .         .      .    .         .    .    .         .     .  .   .  	p[y][x] = 0;
+        .    .    .         .      .    .         .    .    .         .     .  .   .        }
+        .    .    .         .      .    .         .    .    .         .     .  .   .        x = x + 1;
+        .    .    .         .      .    .         .    .    .         .     .  .   .      }
+        .    .    .         .      .    .         .    .    .         .     .  .   .      y = y + 1;
+        .    .    .         .      .    .         .    .    .         .     .  .   .    }
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("OK\n");
+        3    0    0         2      1    0         0    0    0         0     0  0   0  }
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .  int count_white_pixels()
+        .    .    .         .      .    .         .    .    .         .     .  .   .  {
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // variables
+        .    .    .         .      .    .         .    .    .         .     .  .   .    int x, y;
+        .    .    .         .      .    .         .    .    .         .     .  .   .    int counter = 0;
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("Counting white pixels...");
+-- line 187 ----------------------------------------
+-- line 197 ----------------------------------------
+        .    .    .         .      .    .         .    .    .         .     .  .   .      y = y + 1;
+        .    .    .         .      .    .         .    .    .         .     .  .   .    }
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("OK\n");
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    return counter;
+        .    .    .         .      .    .         .    .    .         .     .  .   .  }
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .  void horizontal_edge_detect(int min_diff)
+    1,542    1    1         0      0    0         3    0    0         0     0  0   0  {
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // variables
+        .    .    .         .      .    .         .    .    .         .     .  .   .    int x, y;
+        .    .    .         .      .    .         .    .    .         .     .  .   .    int diff;
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // Any pixel that differs from its right-hand neighbour
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // by more than min_diff will become white. Other pixels
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // become black.
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("Detecting horizontal edges...");
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    y = 0;
+    1,030    0    0         2      0    0         0    0    0       513     3  0   0    while (y < h) {
+        .    .    .         .      .    .         .    .    .         .     .  .   .      x = 0;
+  655,872    1    1         0      0    0         0    0    0   327,680   532  0   0      while (x < w-1) {
+        .    .    .         .      .    .         .    .    .         .     .  .   .        // Find the difference in colour between
+        .    .    .         .      .    .         .    .    .         .     .  .   .        // this pixel and the one to the right of it
+  981,504    0    0   654,336 20,735    0         0    0    0         0     0  0   0        diff = p[y][x+1] - p[y][x];
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .        // Make sure difference is positive
+        .    .    .         .      .    .         .    .    .         .     .  .   .        if (diff < 0) diff = -diff;
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .        // If the difference exceeds the threshold
+        .    .    .         .      .    .         .    .    .         .     .  .   .        // make the pixel white
+2,944,518    0    0         0      0    0   327,168    0    0         0     0  0   0        if (diff > min_diff) p[y][x] = 255;
+        .    .    .         .      .    .         .    .    .         .     .  .   .        else p[y][x] = 0;
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .        x = x + 1;
+        .    .    .         .      .    .         .    .    .         .     .  .   .      }
+        .    .    .         .      .    .         .    .    .         .     .  .   .      y = y + 1;
+        .    .    .         .      .    .         .    .    .         .     .  .   .    }
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("OK\n");
+        3    0    0         2      1    0         0    0    0         0     0  0   0  }
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .  void vertical_edge_detect(int min_diff)
+       10    0    0         0      0    0         7    0    0         0     0  0   0  {
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // variables
+        .    .    .         .      .    .         .    .    .         .     .  .   .    int x, y;
+        .    .    .         .      .    .         .    .    .         .     .  .   .    int diff;
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // Any pixel that differs from the one immediately below
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // it by more than min_diff will become white. All other
+        .    .    .         .      .    .         .    .    .         .     .  .   .    // pixels become black.
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("Detecting vertical edges...");
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .    y = 0;
+    1,030    1    1         2      0    0         0    0    0       512     4  0   0    while (y < h-1) {
+        .    .    .         .      .    .         .    .    .         .     .  .   .      x = 0;
+  657,657    1    1       511      0    0         0    0    0   327,551   543  0   0      while (x < w) {
+        .    .    .         .      .    .         .    .    .         .     .  .   .        // Find the difference in colour between
+        .    .    .         .      .    .         .    .    .         .     .  .   .        // this pixel and the one below it
+  984,186    0    0   654,080 20,735    0         0    0    0         0     0  0   0        diff = p[y+1][x] - p[y][x];
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .        // Make sure difference is positive
+        .    .    .         .      .    .         .    .    .         .     .  .   .        if (diff < 0) diff = -diff;
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .        // If the difference exceeds the threshold
+        .    .    .         .      .    .         .    .    .         .     .  .   .        // make the pixel white
+2,943,366    1    1         0      0    0   327,041    0    0         0     0  0   0        if (diff > min_diff) p[y][x] = 255;
+        .    .    .         .      .    .         .    .    .         .     .  .   .        else p[y][x] = 0;
+        .    .    .         .      .    .         .    .    .         .     .  .   .   
+        .    .    .         .      .    .         .    .    .         .     .  .   .        x = x + 1;
+        .    .    .         .      .    .         .    .    .         .     .  .   .      }
+        .    .    .         .      .    .         .    .    .         .     .  .   .      y = y + 1;
+        .    .    .         .      .    .         .    .    .         .     .  .   .    }
+        .    .    .         .      .    .         .    .    .         .     .  .   .    printf("OK\n");
+        7    0    0         6      1    0         0    0    0         0     0  0   0  }
+
+--------------------------------------------------------------------------------
+-- Auto-annotated source: /usr/include/x86_64-linux-gnu/bits/stdio2.h
+--------------------------------------------------------------------------------
+       Ir I1mr ILmr        Dr   D1mr DLmr        Dw D1mw DLmw Bc Bcm Bi Bim 
+
+-- line 89 ----------------------------------------
+        .    .    .         .      .    .         .    .    .  .   .  .   .  			   const char *__restrict __format, _G_va_list __ap);
+        .    .    .         .      .    .         .    .    .  .   .  .   .  extern int __vprintf_chk (int __flag, const char *__restrict __format,
+        .    .    .         .      .    .         .    .    .  .   .  .   .  			  _G_va_list __ap);
+        .    .    .         .      .    .         .    .    .  .   .  .   .  
+        .    .    .         .      .    .         .    .    .  .   .  .   .  # ifdef __va_arg_pack
+        .    .    .         .      .    .         .    .    .  .   .  .   .  __fortify_function int
+        .    .    .         .      .    .         .    .    .  .   .  .   .  fprintf (FILE *__restrict __stream, const char *__restrict __fmt, ...)
+        .    .    .         .      .    .         .    .    .  .   .  .   .  {
+7,872,600    2    2 1,310,728 82,948    0 1,312,784    0    0  0   0  0   0    return __fprintf_chk (__stream, __USE_FORTIFY_LEVEL - 1, __fmt,
+        .    .    .         .      .    .         .    .    .  .   .  .   .  			__va_arg_pack ());
+        .    .    .         .      .    .         .    .    .  .   .  .   .  }
+        .    .    .         .      .    .         .    .    .  .   .  .   .  
+        .    .    .         .      .    .         .    .    .  .   .  .   .  __fortify_function int
+        .    .    .         .      .    .         .    .    .  .   .  .   .  printf (const char *__restrict __fmt, ...)
+        .    .    .         .      .    .         .    .    .  .   .  .   .  {
+      168    9    5        20      4    0        36    0    0  0   0  0   0    return __printf_chk (__USE_FORTIFY_LEVEL - 1, __fmt, __va_arg_pack ());
+        .    .    .         .      .    .         .    .    .  .   .  .   .  }
+        .    .    .         .      .    .         .    .    .  .   .  .   .  # elif !defined __cplusplus
+        .    .    .         .      .    .         .    .    .  .   .  .   .  #  define printf(...) \
+        .    .    .         .      .    .         .    .    .  .   .  .   .    __printf_chk (__USE_FORTIFY_LEVEL - 1, __VA_ARGS__)
+        .    .    .         .      .    .         .    .    .  .   .  .   .  #  define fprintf(stream, ...) \
+        .    .    .         .      .    .         .    .    .  .   .  .   .    __fprintf_chk (stream, __USE_FORTIFY_LEVEL - 1, __VA_ARGS__)
+        .    .    .         .      .    .         .    .    .  .   .  .   .  # endif
+        .    .    .         .      .    .         .    .    .  .   .  .   .  
+-- line 112 ----------------------------------------
+
+--------------------------------------------------------------------------------
+The following files chosen for auto-annotation could not be found:
+--------------------------------------------------------------------------------
+  /build/glibc-Cl5G7W/glibc-2.23/stdio-common/vfscanf.c
+  /build/glibc-Cl5G7W/glibc-2.23/stdlib/../stdlib/strtol.c
+  /build/glibc-Cl5G7W/glibc-2.23/libio/genops.c
+  /build/glibc-Cl5G7W/glibc-2.23/libio/fileops.c
+  /build/glibc-Cl5G7W/glibc-2.23/debug/fprintf_chk.c
+  /build/glibc-Cl5G7W/glibc-2.23/string/../sysdeps/x86_64/memcpy.S
+  /build/glibc-Cl5G7W/glibc-2.23/stdio-common/printf-parse.h
+  /build/glibc-Cl5G7W/glibc-2.23/string/../sysdeps/x86_64/strchr.S
+  /build/glibc-Cl5G7W/glibc-2.23/stdio-common/../include/scratch_buffer.h
+  /build/glibc-Cl5G7W/glibc-2.23/stdio-common/../libio/libioP.h
+  /build/glibc-Cl5G7W/glibc-2.23/debug/../libio/libioP.h
+  /build/glibc-Cl5G7W/glibc-2.23/stdio-common/isoc99_fscanf.c
+  /build/glibc-Cl5G7W/glibc-2.23/stdlib/../stdlib/strtol_l.c
+  /build/glibc-Cl5G7W/glibc-2.23/stdio-common/_itoa.c
+  /build/glibc-Cl5G7W/glibc-2.23/stdio-common/vfprintf.c
+
+--------------------------------------------------------------------------------
+Ir I1mr ILmr Dr D1mr DLmr Dw D1mw DLmw Bc Bcm Bi Bim 
+--------------------------------------------------------------------------------
+ 2    3    2  1   98    0  1    0    0  2   0  0   0  percentage of events annotated
+

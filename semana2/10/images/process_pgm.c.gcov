@@ -1,0 +1,275 @@
+        -:    0:Source:process_pgm.c
+        -:    0:Graph:./process_pgm_gcov.gcno
+        -:    0:Data:./process_pgm_gcov.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:/*
+        -:    2:  process_pgm.c - Loads, modifies and saves a PGM image file
+        -:    3:
+        -:    4:  Written by Ted Burke - last modified 18-11-2011
+        -:    5:
+        -:    6:  Included image processing operations:
+        -:    7:
+        -:    8:  1. invert colours
+        -:    9:  2. threshold
+        -:   10:  3. Count white pixels
+        -:   11:  4. horizontal edge detect
+        -:   12:  5. vertical edge detect
+        -:   13:
+        -:   14:  To compile:
+        -:   15:
+        -:   16:     gcc process_pgm.c -o process_pgm.exe
+        -:   17:*/
+        -:   18: 
+        -:   19:#include <stdio.h>
+        -:   20:#include <assert.h>
+        -:   21: 
+        -:   22:// 2-D pixel array, like a spreadsheet with 1000 rows & 1000 columns
+        -:   23:int p[1000][1000];
+        -:   24:int w, h;
+        -:   25: 
+        -:   26:// Image file functions
+        -:   27:void load_image_from_file(char[]);
+        -:   28:void save_image_to_file(char[]);
+        -:   29: 
+        -:   30:// Image processing functions
+        -:   31:void invert_colours();
+        -:   32:void apply_threshold(int);
+        -:   33:int count_white_pixels();
+        -:   34:void horizontal_edge_detect(int);
+        -:   35:void vertical_edge_detect(int);
+        -:   36:
+        1:   37:int main()
+        -:   38:{
+        -:   39:  // Try out the invert colours function
+        1:   40:  load_image_from_file("input.pgm");
+        1:   41:  invert_colours();
+        1:   42:  save_image_to_file("inverted_image.pgm");
+        -:   43: 
+        -:   44:  // Try out the image threshold function
+        1:   45:  load_image_from_file("input.pgm");
+        1:   46:  apply_threshold(127);
+        1:   47:  save_image_to_file("thresholded_image.pgm");
+        -:   48: 
+        1:   49:  int edge_threshold = 30;
+        -:   50: 
+        -:   51:  // Horizontal edge detect
+        1:   52:  load_image_from_file("input.pgm");
+        1:   53:  horizontal_edge_detect(edge_threshold);
+        1:   54:  save_image_to_file("horizontal_edges.pgm");
+        -:   55: 
+        -:   56:  // Vertical edge detect
+        1:   57:  load_image_from_file("input.pgm");
+        1:   58:  vertical_edge_detect(edge_threshold);
+        1:   59:  save_image_to_file("vertical_edges.pgm");
+        -:   60:
+        -:   61:  // exit normally
+        -:   62:  return 0;
+        -:   63:}
+        -:   64: 
+        4:   65:void load_image_from_file(char filename[])
+        -:   66:{
+        -:   67:  // Variables
+        -:   68:  FILE *f;
+        -:   69:  char line[200];
+        -:   70:  int x, y;
+        -:   71: 
+        -:   72:  // Open input image file
+        4:   73:  printf("Opening input file %s\n", filename);
+        4:   74:  f = fopen(filename, "r");
+        -:   75: 
+        -:   76:  // Read 4 header lines.
+        -:   77:  // These will just be ignored, but we need to read
+        -:   78:  // them to get down to the table of numbers further
+        -:   79:  // down in the file.
+        4:   80:  printf("Reading file header info\n");
+        4:   81:  assert(1 == fscanf(f, "%[^\n]\n", line));
+        4:   82:  assert(1 == fscanf(f, "%[^\n]\n", line));
+        4:   83:  assert(2 == fscanf(f, "%d %d\n", &w, &h));
+        4:   84:  assert(1 == fscanf(f, "%[^\n]\n", line));
+        -:   85: 
+        -:   86:  // Read pixel data into 2-D array
+        4:   87:  printf("Reading pixel data from file %s\n", filename);
+        4:   88:  y = 0;
+     2056:   89:  while (y < h) {
+        -:   90:    x = 0;
+  1312768:   91:    while (x < w) {
+  1310720:   92:      assert (1 == fscanf(f, "%d", &p[y][x]));
+  1310720:   93:      x = x + 1;
+        -:   94:    }
+     2048:   95:    y = y + 1;
+        -:   96:  }
+        -:   97: 
+        -:   98:  // Close input file
+        4:   99:  printf("Closing input file %s\n", filename);
+        4:  100:  fclose(f);
+        4:  101:}
+        -:  102: 
+        4:  103:void save_image_to_file(char filename[])
+        -:  104:{
+        -:  105:  // variables
+        -:  106:  FILE *f;
+        -:  107:  int x, y;
+        -:  108: 
+        -:  109:  // open output file
+        4:  110:  printf("Opening output file %s\n", filename);
+        4:  111:  f = fopen(filename, "w");
+        -:  112: 
+        -:  113:  // Print header info into file
+        4:  114:  printf("Printing file header to file %s\n", filename);
+        4:  115:  fprintf(f, "P2\n");
+        4:  116:  fprintf(f, "# My PGM file\n");
+        8:  117:  fprintf(f, "%d %d\n", w, h);
+        4:  118:  fprintf(f, "255\n");
+        -:  119: 
+        -:  120:  // Print pixel data into file
+        4:  121:  printf("Printing pixel data to file %s\n", filename);
+        4:  122:  y = 0;
+     2056:  123:  while (y < h) {
+        -:  124:    x = 0;
+  1312768:  125:    while (x < w) {
+  2621440:  126:      fprintf(f, "%d ", p[y][x]);
+  1310720:  127:      x = x + 1;
+        -:  128:    }
+     2048:  129:    fprintf(f, "\n");
+     2048:  130:    y = y + 1;
+        -:  131:  }
+        -:  132: 
+        -:  133:  // Close file
+        4:  134:  printf("Closing output file %s\n", filename);
+        4:  135:  fclose(f);
+        4:  136:}
+        -:  137: 
+        1:  138:void invert_colours(int threshold)
+        -:  139:{
+        -:  140:  // variables
+        -:  141:  int x, y;
+        -:  142: 
+        -:  143:  // Modify all pixel values one at a time
+        1:  144:  printf("Inverting colours...");
+        1:  145:  y = 0;
+      514:  146:  while (y < h) {
+        -:  147:    x = 1;
+   327680:  148:    while (x < w) {
+   327168:  149:      p[y][x] = 255 - p[y][x];
+   327168:  150:      x = x + 1;
+        -:  151:    }
+      512:  152:    y = y + 1;
+        -:  153:  }
+        1:  154:  printf("OK\n");
+        1:  155:}
+        -:  156: 
+        1:  157:void apply_threshold(int threshold)
+        -:  158:{
+        -:  159:  // variables
+        -:  160:  int x, y;
+        -:  161: 
+        -:  162:  // Modify all pixel values one at a time
+        1:  163:  printf("Applying threshold...");
+        1:  164:  y = 0;
+      514:  165:  while (y < h) {
+        -:  166:    x = 0;
+   328192:  167:    while (x < w) {
+   327680:  168:      if (p[y][x] > threshold) {
+   201514:  169:	p[y][x] = 255;
+        -:  170:      }
+        -:  171:      else {
+   126166:  172:	p[y][x] = 0;
+        -:  173:      }
+   327680:  174:      x = x + 1;
+        -:  175:    }
+      512:  176:    y = y + 1;
+        -:  177:  }
+        1:  178:  printf("OK\n");
+        1:  179:}
+        -:  180: 
+    #####:  181:int count_white_pixels()
+        -:  182:{
+        -:  183:  // variables
+        -:  184:  int x, y;
+    #####:  185:  int counter = 0;
+        -:  186: 
+    #####:  187:  printf("Counting white pixels...");
+    #####:  188:  y = 0;
+    #####:  189:  while (y < h) {
+        -:  190:    x = 1;
+    #####:  191:    while (x < w) {
+    #####:  192:      if (p[y][x] == 255) {
+    #####:  193:	counter = counter + 1;
+        -:  194:      }
+    #####:  195:      x = x + 1;
+        -:  196:    }
+    #####:  197:    y = y + 1;
+        -:  198:  }
+    #####:  199:  printf("OK\n");
+        -:  200: 
+    #####:  201:  return counter;
+        -:  202:}
+        -:  203: 
+        1:  204:void horizontal_edge_detect(int min_diff)
+        -:  205:{
+        -:  206:  // variables
+        -:  207:  int x, y;
+        -:  208:  int diff;
+        -:  209: 
+        -:  210:  // Any pixel that differs from its right-hand neighbour
+        -:  211:  // by more than min_diff will become white. Other pixels
+        -:  212:  // become black.
+        1:  213:  printf("Detecting horizontal edges...");
+        -:  214: 
+        1:  215:  y = 0;
+      514:  216:  while (y < h) {
+        -:  217:    x = 0;
+   327680:  218:    while (x < w-1) {
+        -:  219:      // Find the difference in colour between
+        -:  220:      // this pixel and the one to the right of it
+   327168:  221:      diff = p[y][x+1] - p[y][x];
+        -:  222: 
+        -:  223:      // Make sure difference is positive
+   327168:  224:      if (diff < 0) diff = -diff;
+        -:  225: 
+        -:  226:      // If the difference exceeds the threshold
+        -:  227:      // make the pixel white
+   327168:  228:      if (diff > min_diff) p[y][x] = 255;
+   300271:  229:      else p[y][x] = 0;
+        -:  230: 
+        -:  231:      x = x + 1;
+        -:  232:    }
+      512:  233:    y = y + 1;
+        -:  234:  }
+        1:  235:  printf("OK\n");
+        1:  236:}
+        -:  237: 
+        1:  238:void vertical_edge_detect(int min_diff)
+        -:  239:{
+        -:  240:  // variables
+        -:  241:  int x, y;
+        -:  242:  int diff;
+        -:  243: 
+        -:  244:  // Any pixel that differs from the one immediately below
+        -:  245:  // it by more than min_diff will become white. All other
+        -:  246:  // pixels become black.
+        1:  247:  printf("Detecting vertical edges...");
+        -:  248: 
+        1:  249:  y = 0;
+      513:  250:  while (y < h-1) {
+        -:  251:    x = 0;
+   327551:  252:    while (x < w) {
+        -:  253:      // Find the difference in colour between
+        -:  254:      // this pixel and the one below it
+   327040:  255:      diff = p[y+1][x] - p[y][x];
+        -:  256: 
+        -:  257:      // Make sure difference is positive
+   327040:  258:      if (diff < 0) diff = -diff;
+        -:  259: 
+        -:  260:      // If the difference exceeds the threshold
+        -:  261:      // make the pixel white
+   327040:  262:      if (diff > min_diff) p[y][x] = 255;
+   295167:  263:      else p[y][x] = 0;
+        -:  264: 
+   327040:  265:      x = x + 1;
+        -:  266:    }
+      511:  267:    y = y + 1;
+        -:  268:  }
+        1:  269:  printf("OK\n");
+        1:  270:}
