@@ -1,0 +1,39 @@
+never spec {    /* !((! ((! ([] ((principal_state!=ROJO)))) || (([] ((secundario_state==ROJO))) && ([] ((secundario_state!=ROJO)))))) || ([] ((principal_state==ROJO)))) */
+T0_init:
+	do
+	:: (! (((principal_state==ROJO))) && ((secundario_state!=ROJO)) && ((secundario_state==ROJO))) -> goto accept_S5
+	:: atomic { (! (((principal_state!=ROJO))) && ! (((principal_state==ROJO)))) -> assert(!(! (((principal_state!=ROJO))) && ! (((principal_state==ROJO))))) }
+	:: (! (((principal_state==ROJO)))) -> goto T0_S27
+	:: (((secundario_state!=ROJO)) && ((secundario_state==ROJO))) -> goto T0_S14
+	:: (! (((principal_state!=ROJO)))) -> goto T0_S13
+	:: (1) -> goto T0_S23
+	od;
+accept_S5:
+	do
+	:: (((secundario_state!=ROJO)) && ((secundario_state==ROJO))) -> goto accept_S5
+	od;
+T0_S14:
+	do
+	:: (! (((principal_state==ROJO))) && ((secundario_state!=ROJO)) && ((secundario_state==ROJO))) -> goto accept_S5
+	:: (((secundario_state!=ROJO)) && ((secundario_state==ROJO))) -> goto T0_S14
+	od;
+T0_S13:
+	do
+	:: atomic { (! (((principal_state==ROJO)))) -> assert(!(! (((principal_state==ROJO))))) }
+	:: (1) -> goto T0_S13
+	od;
+T0_S23:
+	do
+	:: atomic { (! (((principal_state!=ROJO))) && ! (((principal_state==ROJO)))) -> assert(!(! (((principal_state!=ROJO))) && ! (((principal_state==ROJO))))) }
+	:: (! (((principal_state!=ROJO)))) -> goto T0_S13
+	:: (1) -> goto T0_S23
+	:: (! (((principal_state==ROJO)))) -> goto T0_S27
+	od;
+T0_S27:
+	do
+	:: atomic { (! (((principal_state!=ROJO)))) -> assert(!(! (((principal_state!=ROJO))))) }
+	:: (1) -> goto T0_S27
+	od;
+accept_all:
+	skip
+}
